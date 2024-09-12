@@ -1,15 +1,17 @@
 import { useState } from "react";
 import "./App.css";
-import { Container, Nav, Navbar } from "react-bootstrap";
+import { Container, Nav, Navbar, Spinner } from "react-bootstrap";
 import data from "./data.js";
 import { Routes, Route, Link, useNavigate } from "react-router-dom";
 import Detail from "./routes/Detail.js";
 import Card from "./routes/Card.js";
 import About from "./routes/About.js";
 import Event from "./routes/Event.js";
+import axios from "axios";
 
 function App() {
-  let [shoes] = useState(data);
+  let [shoes, setShoes] = useState(data);
+  let [moreBtnCnt, setMoreBtnCnt] = useState(2);
   let navigate = useNavigate();
 
   return (
@@ -69,6 +71,22 @@ function App() {
                   })}
                 </div>
               </div>
+              <button onClick={(e)=>{
+                  if(moreBtnCnt > 3){
+                    alert('더 이상 준비된 상품이 없습니다.');
+                    return false;
+                  }
+                  axios
+                  .get('https://codingapple1.github.io/shop/data'+moreBtnCnt+'.json')
+                  .then((result)=>{
+                    let copy = [...shoes, ...result.data];
+                    setShoes(copy);
+                    setMoreBtnCnt(moreBtnCnt+1);
+                  })
+                  .catch((result)=>{
+                    console.log('실패');
+                  })
+              }}>더보기</button>
             </>
           }
         />
