@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { createContext, useState } from "react";
 import "./App.css";
-import { Container, Nav, Navbar, Spinner } from "react-bootstrap";
+import { Container, Nav, Navbar } from "react-bootstrap";
 import data from "./data.js";
 import { Routes, Route, Link, useNavigate } from "react-router-dom";
 import Detail from "./routes/Detail.js";
@@ -9,10 +9,13 @@ import About from "./routes/About.js";
 import Event from "./routes/Event.js";
 import axios from "axios";
 
+export let Context1 = createContext();
+
 function App() {
   let [shoes, setShoes] = useState(data);
   let [moreBtnCnt, setMoreBtnCnt] = useState(2);
   let navigate = useNavigate();
+  let [stock] = useState([10, 11, 12]);
 
   return (
     <div className="App">
@@ -71,26 +74,41 @@ function App() {
                   })}
                 </div>
               </div>
-              <button onClick={(e)=>{
-                  if(moreBtnCnt > 3){
-                    alert('더 이상 준비된 상품이 없습니다.');
+              <button
+                onClick={(e) => {
+                  if (moreBtnCnt > 3) {
+                    alert("더 이상 준비된 상품이 없습니다.");
                     return false;
                   }
                   axios
-                  .get('https://codingapple1.github.io/shop/data'+moreBtnCnt+'.json')
-                  .then((result)=>{
-                    let copy = [...shoes, ...result.data];
-                    setShoes(copy);
-                    setMoreBtnCnt(moreBtnCnt+1);
-                  })
-                  .catch((result)=>{
-                    console.log('실패');
-                  })
-              }}>더보기</button>
+                    .get(
+                      "https://codingapple1.github.io/shop/data" +
+                        moreBtnCnt +
+                        ".json"
+                    )
+                    .then((result) => {
+                      let copy = [...shoes, ...result.data];
+                      setShoes(copy);
+                      setMoreBtnCnt(moreBtnCnt + 1);
+                    })
+                    .catch((result) => {
+                      console.log("실패");
+                    });
+                }}
+              >
+                더보기
+              </button>
             </>
           }
         />
-        <Route path="/detail/:id" element={<Detail shoes={shoes} />} />
+        <Route
+          path="/detail/:id"
+          element={
+            <Context1.Provider value={{ stock }}>
+              <Detail shoes={shoes} />
+            </Context1.Provider>
+          }
+        />
         <Route path="/about" element={<About />}>
           <Route path="member" element={<div>member</div>} />
           <Route path="location" element={<div>location</div>} />
