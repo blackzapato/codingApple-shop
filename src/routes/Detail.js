@@ -2,11 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { Nav } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 
-import { Context1 } from "./../App.js";
-
 function Detail(props) {
-  let { stock } = useContext(Context1);
-
   // 1. 이러면 재렌더링마다 코드를 실행가능합니다.
   // useEffect(()=>{ 실행할코드 })
 
@@ -123,7 +119,6 @@ function Detail(props) {
   );
 }
 function TabContent({ custmTab, shoes }) {
-  let { stock } = useContext(Context1);
   let [fade, setFade] = useState("");
 
   useEffect(() => {

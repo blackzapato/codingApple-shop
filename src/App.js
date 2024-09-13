@@ -1,21 +1,19 @@
-import { createContext, useState } from "react";
+import { useState } from "react";
 import "./App.css";
 import { Container, Nav, Navbar } from "react-bootstrap";
 import data from "./data.js";
-import { Routes, Route, Link, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import Detail from "./routes/Detail.js";
 import Card from "./routes/Card.js";
 import About from "./routes/About.js";
 import Event from "./routes/Event.js";
 import axios from "axios";
-
-export let Context1 = createContext();
+import Cart from "./routes/Cart.js";
 
 function App() {
   let [shoes, setShoes] = useState(data);
   let [moreBtnCnt, setMoreBtnCnt] = useState(2);
   let navigate = useNavigate();
-  let [stock] = useState([10, 11, 12]);
 
   return (
     <div className="App">
@@ -38,21 +36,28 @@ function App() {
             </Nav.Link>
             <Nav.Link
               onClick={() => {
-                navigate("/detail");
+                navigate("/cart");
               }}
             >
               Cart
             </Nav.Link>
             <Nav.Link
               onClick={() => {
-                navigate("/about");
+                navigate("/detail/0");
+              }}
+            >
+              Detail
+            </Nav.Link>
+            <Nav.Link
+              onClick={() => {
+                navigate("/about/member");
               }}
             >
               about
             </Nav.Link>
             <Nav.Link
               onClick={() => {
-                navigate("/event");
+                navigate("/event/one");
               }}
             >
               event
@@ -101,14 +106,8 @@ function App() {
             </>
           }
         />
-        <Route
-          path="/detail/:id"
-          element={
-            <Context1.Provider value={{ stock }}>
-              <Detail shoes={shoes} />
-            </Context1.Provider>
-          }
-        />
+        <Route path="/detail/:id" element={<Detail shoes={shoes} />} />
+        <Route path="/cart" element={<Cart />} />
         <Route path="/about" element={<About />}>
           <Route path="member" element={<div>member</div>} />
           <Route path="location" element={<div>location</div>} />
