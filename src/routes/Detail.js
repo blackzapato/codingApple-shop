@@ -1,6 +1,8 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Nav } from "react-bootstrap";
 import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {addCount, addCart} from './../store.js'
 
 function Detail(props) {
   // 1. 이러면 재렌더링마다 코드를 실행가능합니다.
@@ -35,6 +37,9 @@ function Detail(props) {
   let findPrdt = props.shoes.find((x) => x.id == id);
   let [custmTab, setcustmTab] = useState(0);
   let [detailFade, setDetailFade] = useState("");
+  let state = useSelector((state) => state);
+  let dispatch = useDispatch();
+  
 
   useEffect(() => {
     let timer = setTimeout(() => {
@@ -78,7 +83,17 @@ function Detail(props) {
           <h4 className="pt-5">{findPrdt.title}</h4>
           <p>{findPrdt.content}</p>
           <p>{findPrdt.price}</p>
-          <button className="btn btn-danger">주문하기</button>
+          <button className="btn btn-danger" onClick={()=>{
+
+            if(state.cartStock.findIndex(v => v.id == findPrdt.id) > -1){
+              dispatch(addCount(findPrdt.id));
+            }
+            else{
+              let data = {id: findPrdt.id, name: findPrdt.title, count: 1};
+              dispatch(addCart(data));
+            }
+
+            }}>주문하기</button>
         </div>
       </div>
 
