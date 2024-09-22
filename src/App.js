@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import { Container, Nav, Navbar } from "react-bootstrap";
 import data from "./data.js";
@@ -11,6 +11,14 @@ import axios from "axios";
 import Cart from "./routes/Cart.js";
 
 function App() {
+
+  useEffect(()=>{
+    if(localStorage.getItem('watched') == null ){
+      localStorage.setItem('watched', JSON.stringify( [] ))
+    }
+
+  },[]) 
+
   let [shoes, setShoes] = useState(data);
   let [moreBtnCnt, setMoreBtnCnt] = useState(2);
   let navigate = useNavigate();
@@ -40,13 +48,6 @@ function App() {
               }}
             >
               Cart
-            </Nav.Link>
-            <Nav.Link
-              onClick={() => {
-                navigate("/detail/0");
-              }}
-            >
-              Detail
             </Nav.Link>
             <Nav.Link
               onClick={() => {

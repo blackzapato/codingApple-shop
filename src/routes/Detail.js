@@ -3,34 +3,10 @@ import { Nav } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {addCount, addCart} from './../store.js'
+import { useLike } from "../hooks/like.js";
 
 function Detail(props) {
-  // 1. 이러면 재렌더링마다 코드를 실행가능합니다.
-  // useEffect(()=>{ 실행할코드 })
 
-  // 2. 이러면 컴포넌트 mount시 (로드시) 1회만 실행가능합니다.
-  // useEffect(()=>{ 실행할코드 }, [])
-
-  // 3. 이러면 useEffect 안의 코드 실행 전에 항상 실행됩니다.
-  // useEffect(()=>{
-  //   return ()=>{
-  //     실행할코드
-  //   }
-  // })
-
-  // 4. 이러면 컴포넌트 unmount시 1회 실행됩니다.
-  // useEffect(()=>{
-  //   return ()=>{
-  //     실행할코드
-  //   }
-  // }, [])
-
-  // 5. 이러면 state1이 변경될 때만 실행됩니다.
-  // useEffect(()=>{
-  //   실행할코드
-  // }, [state1])
-
-  // let [text, setText] = useState("");
   let [count, setCount] = useState(0);
   let [alert, setAlert] = useState(true);
   let { id } = useParams();
@@ -51,6 +27,14 @@ function Detail(props) {
       setDetailFade("end");
     }, 100);
 
+
+    let watced = JSON.parse(localStorage.getItem('watched'));
+    watced.push(findPrdt.id)
+    watced = new Set(watced);
+    watced = Array.from(watced);
+    
+    localStorage.setItem('watched', JSON.stringify( watced ))
+
     return () => {
       clearTimeout(timer);
       clearTimeout(tempTimer);
@@ -58,28 +42,23 @@ function Detail(props) {
     };
   }, []);
 
-  // useEffect(() => {
-  //   if (isNaN(text) == true) {
-  //     alert("그러지마세요");
-  //   }
-  // }, [text]);
+  let [like, addLike] = useLike();
 
   return (
     <div className={`container start ${detailFade}`}>
       {alert == true && (
         <div className="alert alert-warning">2초 이내 구매시 할인</div>
       )}
-      {/* <input
-        type="text"
-        onChange={(e) => {
-          setText(e.target.value);
-        }}
-      /> */}
+     
       <div className="row">
         <div className="col-md-6">
           <img src={"/shoes" + (Number(id) + 1) + ".jpg"} width="100%" />
         </div>
         <div className="col-md-6">
+
+          <h4>{like}</h4>
+          <button onClick={()=>{ addLike() }}>❤</button> 
+
           <h4 className="pt-5">{findPrdt.title}</h4>
           <p>{findPrdt.content}</p>
           <p>{findPrdt.price}</p>
